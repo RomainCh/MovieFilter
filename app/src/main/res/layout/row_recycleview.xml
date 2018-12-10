@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp">
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="70dp"
+        android:layout_height="100dp"
+        android:contentDescription="@string/text_default"
+        android:maxHeight="120dp"
+        android:maxWidth="120dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/titleAndDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="5dp"
+            android:layout_toStartOf="@+id/rowScore">
+
+            <TextView
+                android:id="@+id/rowTitle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="5dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:paddingLeft="5dp"
+                android:text="@string/text_default"
+                android:textColor="@color/white"
+                android:textSize="22dp" />
+
+
+            <TextView
+                android:id="@+id/rowEpisodes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/rowTitle"
+                android:layout_below="@+id/rowTitle"
+                android:paddingLeft="5dp"
+                android:text="@string/text_default"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/rowScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/rowScore_max"
+            android:text="@string/text_default"
+            android:textColor="@android:color/holo_orange_light"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/rowScore_max"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/rowScore"
+            android:layout_alignBottom="@+id/rowScore"
+            android:layout_alignParentEnd="true"
+            android:text="@string/text_default_maxScore"
+            android:textColor="@android:color/holo_orange_light"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+</LinearLayout>
