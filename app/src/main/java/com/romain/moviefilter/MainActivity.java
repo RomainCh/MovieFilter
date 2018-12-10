@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import android.view.View;
@@ -22,11 +23,22 @@ public class MainActivity extends Activity {
     private boolean buttonGenre_state = true;
     private String type = new String();
     private ArrayList<String> genres = new ArrayList<>();
+    private int[] btnsId;
+
+    private boolean validSearch = false;
+    private boolean typeVideo = false;
+    private Button buttonRequest;
+
+    private int initButtonRequestAlpha = 10;
+    private String colorButtonRequestDisabled = "#333333";
+    private String buttonSelected = "#5cb55c";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        btnsId = new int[]{R.id.typeFilms, R.id.typeSeries, R.id.typeAnimes};
 
         // ################################################ Dropdown Button Type ##################################################
 
@@ -73,17 +85,26 @@ public class MainActivity extends Activity {
         // ############################################### Button Movie Request ####################################################
 
 
-        final Button buttonRequest = (Button) findViewById(R.id.buttonRequest);
+        buttonRequest = (Button) findViewById(R.id.buttonRequest);
+        initButtonRequest();
+
         buttonRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Context context = view.getContext();
-                Intent intent = new Intent(context, ListItemActivity.class);
-                intent.putExtra("type", type);
-                intent.putStringArrayListExtra("genres", genres);
-                context.startActivity(intent);
+                if(validSearch) {
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, ListItemActivity.class);
+                    intent.putExtra("type", type);
+                    intent.putStringArrayListExtra("genres", genres);
+                    context.startActivity(intent);
+                }
             }
         });
+    }
+
+    private void initButtonRequest() {
+        buttonRequest.setTextColor(Color.parseColor(colorButtonRequestDisabled));
+        buttonRequest.getBackground().setAlpha(initButtonRequestAlpha);
     }
 
     // ############################################# Infos à transférer ###################################################
@@ -98,13 +119,12 @@ public class MainActivity extends Activity {
             type = ((Button)v).getText().toString();
         }
 
-
-        int[] btnsId = new int[]{R.id.typeFilms, R.id.typeSeries, R.id.typeAnimes};
-
         if (v.getBackground().getAlpha() == 255){
             v.getBackground().setAlpha(100);
+            typeVideo = true;
         } else {
             v.getBackground().setAlpha(255);
+            typeVideo = false;
         }
 
         for (int i = 0; i < btnsId.length; i++){
@@ -114,9 +134,21 @@ public class MainActivity extends Activity {
             }
         }
 
+        testButtonSearch();
 
         Toast.makeText(v.getContext(), type, Toast.LENGTH_LONG).show();
 
+    }
+
+    private void testButtonSearch() {
+        validSearch = typeVideo&&(genres.size()>0);
+        if (validSearch) {
+            buttonRequest.setTextColor(Color.WHITE);
+            buttonRequest.getBackground().setAlpha(255);
+        }
+        else{
+            initButtonRequest();
+        }
     }
 
     public void addGenreToList(View v){
@@ -124,11 +156,14 @@ public class MainActivity extends Activity {
         String txtButton = ((Button)v).getText().toString();
         updateArray(txtButton);
         if (v.getBackground().getAlpha() == 255){
+            ((Button)v).setTextColor(Color.parseColor(buttonSelected));
             v.getBackground().setAlpha(64);
         } else {
+            ((Button)v).setTextColor(Color.WHITE);
             v.getBackground().setAlpha(255);
         }
 
+        testButtonSearch();
         Toast.makeText(v.getContext(), genres.toString(), Toast.LENGTH_LONG).show();
 
     }
@@ -142,4 +177,5 @@ public class MainActivity extends Activity {
         }
         genres.add(txtButton);
     }
+
 }

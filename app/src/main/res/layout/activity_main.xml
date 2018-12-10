@@ -22,6 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="casual"
+                android:layout_marginTop="4dp"
                 android:text="@string/accueil"
                 android:textAlignment="center"
                 android:textColor="@color/white"
@@ -245,7 +246,7 @@
                         android:layout_below="@+id/genreComedy"
                         android:layout_toEndOf="@+id/genreSliceOfLife"
                         android:onClick="addGenreToList"
-                        android:text="Science Fiction" />
+                        android:text="Sci-fi" />
 
                     <Button
                         android:id="@+id/genreHistory"
@@ -255,7 +256,7 @@
                         android:layout_below="@+id/genreComedy"
                         android:layout_toEndOf="@+id/genreSciFi"
                         android:onClick="addGenreToList"
-                        android:text="History" />
+                        android:text="Historical" />
 
                     <Button
                         android:id="@+id/genreShojo"
