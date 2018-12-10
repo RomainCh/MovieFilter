@@ -91,10 +91,27 @@ public class MainActivity extends Activity {
     public void addType(View v){
 
         String txtButtonType = ((Button)v).getText().toString();
+
         if (type == txtButtonType) {
             type = "";
         } else {
             type = ((Button)v).getText().toString();
+        }
+
+
+        int[] btnsId = new int[]{R.id.typeFilms, R.id.typeSeries, R.id.typeAnimes};
+
+        if (v.getBackground().getAlpha() == 255){
+            v.getBackground().setAlpha(100);
+        } else {
+            v.getBackground().setAlpha(255);
+        }
+
+        for (int i = 0; i < btnsId.length; i++){
+            Button btn = (Button) findViewById(btnsId[i]);
+            if(btn.getId() != v.getId()) {
+                btn.getBackground().setAlpha(255);
+            }
         }
 
 
@@ -106,6 +123,12 @@ public class MainActivity extends Activity {
 
         String txtButton = ((Button)v).getText().toString();
         updateArray(txtButton);
+        if (v.getBackground().getAlpha() == 255){
+            v.getBackground().setAlpha(64);
+        } else {
+            v.getBackground().setAlpha(255);
+        }
+
         Toast.makeText(v.getContext(), genres.toString(), Toast.LENGTH_LONG).show();
 
     }

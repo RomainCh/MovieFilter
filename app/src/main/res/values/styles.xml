@@ -6,7 +6,7 @@
     </style>
 
     <style name="ButtonGrey">
-        <item name="android:background">@color/buttonColor</item>
+        <item name="android:backgroundTint">@color/buttonColor</item>
         <item name="android:textColor">@color/white</item>
     </style>
 

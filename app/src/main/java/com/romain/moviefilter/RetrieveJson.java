@@ -33,7 +33,9 @@ public class RetrieveJson extends AsyncTask<String, Void, JSONObject> {
 
     protected void onPostExecute(JSONObject json) {
         try {
-            Log.i("(info)", ""+(json==null)+"  "+json.getString("item_count"));
+            if(json!=null) {
+                Log.i("(info)", "" + (json == null) + "  " + json.getString("item_count"));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

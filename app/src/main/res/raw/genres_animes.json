@@ -1,0 +1,21 @@
+{
+  "Action":1,
+  "Adventure":2,
+  "Comedy":4,
+  "Drama":7,
+  "Fantasy":9,
+  "Historical":13,
+  "Horror":14,
+  "Magics":17,
+  "Mecha":19,
+  "Music":21,
+  "Mystery":22,
+  "Police":24,
+  "Romance":26,
+  "School":28,
+  "Sci-Fi":29,
+  "Seinen":30,
+  "Shôjo":31,
+  "Shônen":33,
+  "Slice of Life":35
+}

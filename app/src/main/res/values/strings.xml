@@ -1,7 +1,7 @@
 <resources>
     <!--Simple String-->
     <string name="app_name">MovieFilter</string>
-    <string name="accueil">What do you want to watch tonight friend ?</string>
+    <string name="accueil">What do you want to watch tonight my friend ?</string>
     <string name="text_default">Undefined</string>
     <string name="text_default_maxScore">/10</string>
     <string name="txtButtonSynopsis">See the synopsis</string>
@@ -9,4 +9,5 @@
     <string name="animes">Animés</string>
     <string name="genre">Genre :</string>
     <string name="producers">Producers</string>
+    <string name="txtRetryBtn">Retry</string>
 </resources>

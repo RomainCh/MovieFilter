@@ -9,5 +9,5 @@
     <color name="bgScoreColor">#141414</color>
     <color name="bgColorDarkLight">#282a36</color>
     <color name="bgButtonRed">#c40812</color>
-    <color name="buttonColor">#3B0B0B</color>
+    <color name="buttonColor">#333333</color>
 </resources>

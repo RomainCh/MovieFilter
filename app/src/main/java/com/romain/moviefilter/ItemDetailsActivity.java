@@ -40,7 +40,7 @@ public class ItemDetailsActivity extends Activity {
 
         Bundle bundle = getIntent().getExtras();
 
-        String title     = bundle.getString("title");
+        String title = bundle.getString("title");
 
         txtTitle.setText(title);
         Picasso.get().load(bundle.getString("image_url")).into(bgImage);
@@ -62,9 +62,9 @@ public class ItemDetailsActivity extends Activity {
         // Genres
             TextView txtGenres  = (TextView) findViewById(R.id.txtGenres);
 
-            String stringGenres = " - ";
+            String stringGenres = "";
             for(int i=0;i<genres.size();i++) {
-                stringGenres+=genres.get(i)+" - ";
+                stringGenres+=genres.get(i)+((i<genres.size()-1) ? " - ":"");
             }
 
             txtGenres.setText(stringGenres);
@@ -87,6 +87,16 @@ public class ItemDetailsActivity extends Activity {
         ActionBar actionBar = getActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setTitle(bundle.getString("score"));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return (super.onOptionsItemSelected(menuItem));
     }
 
 }
