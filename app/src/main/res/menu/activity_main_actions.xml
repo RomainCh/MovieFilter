@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- Search / will display always -->
+    <item android:id="@+id/action_search"
+        android:icon="@drawable/ic_action_search"
+        android:title="@string/txtSearch"
+        android:showAsAction="ifRoom"/>
+
+    <!-- Check updates -->
+    <item android:id="@+id/action_showProfil"
+        android:icon="@drawable/ic_action_user"
+        android:title="@string/go_to_my_profil"
+        android:showAsAction="ifRoom" />
+</menu>

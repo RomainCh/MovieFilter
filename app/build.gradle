@@ -28,4 +28,5 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.0.1'
     implementation 'com.android.support:support-annotations:27.1.1'
     implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+    implementation 'com.android.support:design:27.1.1'
 }

@@ -31,7 +31,7 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".FulltextActivity"
+            android:name=".DisplayTextActivity"
             android:label="@string/text_default"
             android:parentActivityName=".ItemDetailsActivity"
             android:screenOrientation="portrait">
@@ -39,9 +39,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ItemDetailsActivity" />
         </activity>
-        <activity android:name=".ListItemActivity"
-            android:screenOrientation="portrait">
-        </activity>
+        <activity
+            android:name=".ListItemActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".ProfilActivity"></activity>
     </application>
 
 </manifest>

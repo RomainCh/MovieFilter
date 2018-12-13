@@ -10,4 +10,6 @@
     <string name="genre">Genre :</string>
     <string name="producers">Producers</string>
     <string name="txtRetryBtn">Retry</string>
+    <string name="txtSearch">Search</string>
+    <string name="go_to_my_profil">Go to my profil</string>
 </resources>

@@ -10,4 +10,5 @@
     <color name="bgColorDarkLight">#282a36</color>
     <color name="bgButtonRed">#c40812</color>
     <color name="buttonColor">#333333</color>
+    <color name="bg_row_background">#c40812</color>
 </resources>
