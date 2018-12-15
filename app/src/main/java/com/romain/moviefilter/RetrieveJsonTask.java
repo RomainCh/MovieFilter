@@ -27,10 +27,11 @@ public class RetrieveJsonTask extends AsyncTask<String, Void, JSONObject> {
             JSONObject json = null;
             try {
                 json = new JSONObject(IOUtils.toString(new URL(urls[0]), Charset.forName("UTF-8")));
+                Log.i("(Info) ", "->"+json.length());
             } catch (IOException e) {
-                //System.out.println(": Error with HTTP Request -> "+e);
+                Log.i("(Error)", "-> "+e);
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.i("(Error)", "->"+e);
             }
             return json;
         }
@@ -44,7 +45,7 @@ public class RetrieveJsonTask extends AsyncTask<String, Void, JSONObject> {
         protected void onPostExecute(JSONObject json) {
             try {
                 if(json!=null) {
-                    Log.i("(info)", "" + (json == null) + "  " + json.getString("item_count"));
+                    Log.i("(Info)", "" + (json == null) + "  " + json.getString("item_count"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

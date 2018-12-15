@@ -6,8 +6,6 @@ package com.romain.moviefilter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +20,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -36,14 +30,16 @@ public class ItemRowAdapter extends RecyclerView.Adapter<ItemRowAdapter.ViewHold
 
     private DecimalFormat df = new DecimalFormat("#.00");
 
+    private  int typeProcessed;
 
     //####################################################################################################################################################
     //##### On récupére les données passées en argument (JSONArray) ######################################################################################
     //####################################################################################################################################################
 
-        public ItemRowAdapter(JSONArray myDataset) {
-        values = myDataset;
-    }
+        public ItemRowAdapter(JSONArray myDataset, int typeProcessed) {
+            values = myDataset;
+            this.typeProcessed = typeProcessed;
+        }
 
     //####################################################################################################################################################
     //##### Création de références pour chaque item du JSONArray sur lequel on itérera pour créer les lignes du RecyleView ###############################
@@ -93,49 +89,94 @@ public class ItemRowAdapter extends RecyclerView.Adapter<ItemRowAdapter.ViewHold
             try {
                 JSONObject jsonElement = values.getJSONObject(position);
 
-                final String title         = jsonElement.getString("title");
-                final String imageUrl      = jsonElement.getString("image_url");
-                final String synopsis      = jsonElement.getString("synopsis");
-                final String score         = jsonElement.getString("score");
-                final JSONArray genres     = jsonElement.getJSONArray("genres");
-                final JSONArray producers  = jsonElement.getJSONArray("producers");
-
-
-                holder.txtTitle.setText(title);
-                holder.layout.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, ItemDetailsActivity.class);
-                        intent.putExtra("title", title);
-                        intent.putExtra("image_url", imageUrl);
-                        intent.putExtra("synopsis", synopsis);
-                        intent.putExtra("score", score);
-
-                        ArrayList<String> genresArray    = getArrayListFromName(genres);
-                        intent.putStringArrayListExtra("genres", genresArray);
-
-                        ArrayList<String> producersArray = getArrayListFromName(producers);
-                        intent.putStringArrayListExtra("producers", producersArray);
-
-                        context.startActivity(intent);
-                    }
-                });
-
-                holder.txtScore.setText(df.format(Double.parseDouble(score)));
-
-                String nbEpisodes = "Error";
-                nbEpisodes = rightText(jsonElement.getString("episodes"));
-
-                holder.txtEpisodes.setText(nbEpisodes);
-
-                Picasso.get().load(imageUrl).into(holder.txtThumbNail);
+                if(typeProcessed==1){
+                    initRowAnime(holder, jsonElement);
+                }
+                else{
+                    initRowMovie(holder, jsonElement);
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
         }
+
+    private void initRowAnime(ViewHolder holder, JSONObject jsonElement) throws JSONException {
+
+        final String title         = jsonElement.getString("title");
+        final String imageUrl      = jsonElement.getString("image_url");
+        final String synopsis      = jsonElement.getString("synopsis");
+        final String score         = jsonElement.getString("score");
+        final JSONArray genres     = jsonElement.getJSONArray("genres");
+        final JSONArray producers  = jsonElement.getJSONArray("producers");
+
+        holder.txtTitle.setText(title);
+        holder.layout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+
+                Intent intent = null;
+
+                intent = new Intent(context, AnimeDetailsActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("image_url", imageUrl);
+                intent.putExtra("synopsis", synopsis);
+                intent.putExtra("score", score);
+
+                ArrayList<String> genresArray = getArrayListFromName(genres);
+                intent.putStringArrayListExtra("genres", genresArray);
+
+                ArrayList<String> producersArray = getArrayListFromName(producers);
+                intent.putStringArrayListExtra("producers", producersArray);
+
+                context.startActivity(intent);
+            }
+        });
+
+        holder.txtScore.setText(df.format(Double.parseDouble(score)));
+
+        String nbEpisodes = "Error";
+        nbEpisodes = rightText(jsonElement.getString("episodes"));
+
+        holder.txtEpisodes.setText(nbEpisodes);
+
+        Picasso.get().load(imageUrl).into(holder.txtThumbNail);
+    }
+
+    private void initRowMovie(ViewHolder holder, JSONObject jsonElement) throws JSONException {
+        final String title         = jsonElement.getString("title");
+        final String imageUrl      = "https://image.tmdb.org/t/p/w500"+jsonElement.getString("poster_path");
+        final String score         = jsonElement.getString("vote_average");
+        final String releaseDate   = rightFormatDate(jsonElement.getString("release_date"));
+        final String synopsis      = jsonElement.getString("overview");
+        final int id               = jsonElement.getInt("id");
+
+        // full image url :https://image.tmdb.org/t/p/w500
+
+        holder.txtTitle.setText(title);
+        holder.layout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, MovieDetailsActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("title", title);
+                intent.putExtra("image_url", imageUrl);
+                intent.putExtra("synopsis", synopsis);
+                intent.putExtra("score", score);
+
+                context.startActivity(intent);
+            }
+        });
+
+        holder.txtScore.setText(score);//df.format(Double.parseDouble(score)));
+
+        holder.txtEpisodes.setText(releaseDate);
+
+        Picasso.get().load(imageUrl).into(holder.txtThumbNail);
+    }
 
 
     //####################################################################################################################################################
@@ -172,9 +213,9 @@ public class ItemRowAdapter extends RecyclerView.Adapter<ItemRowAdapter.ViewHold
                 try {
                     int nbEpisodesInt = Integer.parseInt(nbEpisodes);
                     if (nbEpisodesInt > 1) {
-                        return nbEpisodes + " épisodes";
+                        return nbEpisodes + " episodes";
                     } else {
-                        return nbEpisodes + " épisode";
+                        return nbEpisodes + " episode";
                     }
                 } catch (NumberFormatException nfe) {
                     return "In Progress";
@@ -194,5 +235,10 @@ public class ItemRowAdapter extends RecyclerView.Adapter<ItemRowAdapter.ViewHold
             }
             return genresArray;
         }
+
+    private String rightFormatDate(String releaseDate) {
+        String[] dateParts = releaseDate.split("-");
+        return String.format("%s/%s/%s", dateParts[2], dateParts[1], dateParts[0]);
+    }
 
 }

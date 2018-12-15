@@ -12,9 +12,9 @@
         android:layout_width="70dp"
         android:layout_height="100dp"
         android:contentDescription="@string/text_default"
-        android:maxHeight="120dp"
         android:maxWidth="120dp"
-        android:src="@mipmap/ic_launcher" />
+        android:maxHeight="120dp"
+        android:src="@drawable/ic_launcher" />
 
     <RelativeLayout
         android:layout_width="match_parent"

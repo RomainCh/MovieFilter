@@ -1,12 +1,14 @@
 package com.romain.moviefilter;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -14,12 +16,11 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class MainActivity extends Activity {
 
-    private boolean buttonType_state = true;
+    private boolean buttonType_state  = false;
     private boolean buttonGenre_state = true;
     private String type = new String();
     private ArrayList<String> genres = new ArrayList<>();
@@ -33,6 +34,8 @@ public class MainActivity extends Activity {
     private String colorButtonRequestDisabled = "#333333";
     private String buttonSelected = "#5cb55c";
 
+    private Context context;
+
 
     //####################################################################################################################################################
     //##### onCreate method ##############################################################################################################################
@@ -43,7 +46,9 @@ public class MainActivity extends Activity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
 
-            btnsId = new int[]{R.id.typeFilms, R.id.typeSeries, R.id.typeAnimes};
+            context = this;
+
+            btnsId = new int[]{R.id.typeMovie, R.id.typeAnime};
 
             //#############################################################################
             //##### Dropdown Button Type ##################################################
@@ -87,7 +92,6 @@ public class MainActivity extends Activity {
                             dropdownButtonGenre.setImageResource(R.drawable.down_arrow);
                             buttonGenre_state = true;
                         }
-
                     }
                 });
 
@@ -103,7 +107,7 @@ public class MainActivity extends Activity {
                     public void onClick(View view) {
                         if(validSearch) {
                             Context context = view.getContext();
-                            Intent intent = new Intent(context, ListItemActivity.class);
+                            Intent intent = new Intent(context, ListPropositionActivity.class);
                             intent.putExtra("type", type);
                             intent.putStringArrayListExtra("genres", genres);
                             context.startActivity(intent);
@@ -116,6 +120,32 @@ public class MainActivity extends Activity {
         private void initButtonRequest() {
             buttonRequest.setTextColor(Color.parseColor(colorButtonRequestDisabled));
             buttonRequest.getBackground().setAlpha(initButtonRequestAlpha);
+        }
+
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.activity_main_actions, menu);
+            MenuItem itemHome = menu.findItem(R.id.action_goHome);
+            MenuItem itemSearch = menu.findItem(R.id.action_search);
+            itemHome.setVisible(false);
+            itemSearch.setVisible(false);
+            return super.onCreateOptionsMenu(menu);
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            switch (item.getItemId()){
+                case R.id.action_goHome:
+                    Intent intentHome = new Intent(context, MainActivity.class);
+                    context.startActivity(intentHome);
+                    return true;
+                case R.id.action_showProfil:
+                    Intent intentProfil = new Intent(context, ProfilActivity.class);
+                    context.startActivity(intentProfil);
+                    return true;
+            }
+            return super.onOptionsItemSelected(item);
         }
 
     //####################################################################################################################################################

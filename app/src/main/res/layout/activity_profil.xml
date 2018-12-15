@@ -10,8 +10,10 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" android:visibility="gone"
-        android:scrollbars="vertical" />
+        android:layout_height="426dp"
+        android:layout_marginTop="8dp"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <!--<RelativeLayout-->
         <!--android:id="@+id/layoutNoResult"-->
@@ -54,6 +56,38 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/btnFilterOnlyAnime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/ButtonGrey"
+            android:onClick="selectFilter"
+            android:text="@string/titreAnime" />
+
+        <Button
+            android:id="@+id/btnFilterOnlyMovie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/ButtonGrey"
+            android:onClick="selectFilter"
+            android:text="@string/titreMovie" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

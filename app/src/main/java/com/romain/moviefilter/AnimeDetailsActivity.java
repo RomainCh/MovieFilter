@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * Created by romain on 03/12/18.
  */
 
-public class ItemDetailsActivity extends Activity {
+public class AnimeDetailsActivity extends Activity {
 
 
     //####################################################################################################################################################

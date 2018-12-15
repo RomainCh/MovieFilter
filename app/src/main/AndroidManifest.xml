@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ItemDetailsActivity"
+            android:name=".AnimeDetailsActivity"
             android:label="@string/text_default"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait">
@@ -33,16 +33,25 @@
         <activity
             android:name=".DisplayTextActivity"
             android:label="@string/text_default"
-            android:parentActivityName=".ItemDetailsActivity"
+            android:parentActivityName=".AnimeDetailsActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ItemDetailsActivity" />
+                android:value=".AnimeDetailsActivity" />
         </activity>
         <activity
-            android:name=".ListItemActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".ProfilActivity"></activity>
+            android:name=".ListPropositionActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ProfilActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".MovieDetailsActivity"
+            android:label="@string/text_default"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
     </application>
 
 </manifest>

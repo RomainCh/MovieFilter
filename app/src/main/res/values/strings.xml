@@ -6,10 +6,12 @@
     <string name="text_default_maxScore">/10</string>
     <string name="txtButtonSynopsis">See the synopsis</string>
     <string name="txtButtonReturnSynopsis">[x]    Synopsis</string>
-    <string name="animes">Animés</string>
+    <string name="titreAnime">Animes</string>
+    <string name="titreMovie">Movies</string>
     <string name="genre">Genre :</string>
     <string name="producers">Producers</string>
     <string name="txtRetryBtn">Retry</string>
     <string name="txtSearch">Search</string>
     <string name="go_to_my_profil">Go to my profil</string>
+    <string name="txtHomeReturnAction">Return home</string>
 </resources>

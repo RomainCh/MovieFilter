@@ -21,9 +21,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,7 +46,7 @@ import java.util.ArrayList;
 //import javax.ws.rs.core.MediaType;
 //import javax.ws.rs.core.Response;
 
-public class ListItemActivity extends Activity implements AsyncResponse{
+public class ListPropositionActivity extends Activity implements AsyncResponse{
 
     // RecycleView components
         private RecyclerView recyclerView;
@@ -66,6 +66,11 @@ public class ListItemActivity extends Activity implements AsyncResponse{
     private Context context;
 
     public static String globalPreferenceName = "com.romain.moviefilter";
+    private Menu menu;
+
+    private JSONArray resultsFinal = new JSONArray();
+    private String apiKeyJson = null;
+    private int typeProcessed;
 
     //####################################################################################################################################################
     //##### onCreate method ##############################################################################################################################
@@ -97,22 +102,38 @@ public class ListItemActivity extends Activity implements AsyncResponse{
                         e.printStackTrace();
                     }
 
-                // Contact API
-                    String type = "anime";
-                    int genreId = 0;
-                    try {
-                        genreId = jsonGenres.getInt(genresChoosen.get(0));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                Bundle bundle = getIntent().getExtras();
+                String type = bundle.getString("type");
 
-                    int page = 1;
+                if(type.equals("Movie")){
+                    // Contact API
+                    apiKeyJson = "results";
+                    typeProcessed = 0;
+                    url = "https://api.themoviedb.org/3/movie/top_rated?api_key=fbaaf7792a566ae6c637bab86098f3d3&language=en-US&page=1";
+                }
+                else{
+                    // Contact API
+                    apiKeyJson = "anime";
+                    typeProcessed = 1;
+                        int genreId = 0;
 
-                    url = String.format("https://api.jikan.moe/v3/genre/%s/%d/%d", type, genreId, page);
+                        try {
+                            genreId = jsonGenres.getInt(genresChoosen.get(0));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-                    AsyncResponse asyncR  = this;
-                    retrieveJsonTask.delegate = asyncR;
-                    retrieveJsonTask.execute(url);
+                        int page = 1;
+
+                    url = String.format("https://api.jikan.moe/v3/genre/%s/%d/%d", "anime", genreId, page);
+                }
+
+                Log.i("oooo", type);
+
+
+                AsyncResponse asyncR  = this;
+                retrieveJsonTask.delegate = asyncR;
+                retrieveJsonTask.execute(url);
 
             // Set navbar
             ActionBar actionBar = getActionBar();
@@ -126,6 +147,9 @@ public class ListItemActivity extends Activity implements AsyncResponse{
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_main_actions, menu);
+        MenuItem itemHome = menu.findItem(R.id.action_goHome);
+        itemHome.setVisible(false);
+        this.menu = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -133,16 +157,20 @@ public class ListItemActivity extends Activity implements AsyncResponse{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_search:
-                // TODO
+                initSearchView();
+                return true;
+            case R.id.action_goHome:
+                Intent intentHome = new Intent(context, MainActivity.class);
+                context.startActivity(intentHome);
                 return true;
             case R.id.action_showProfil:
-                Intent intent = new Intent(context, ProfilActivity.class);
-                context.startActivity(intent);
+                Intent intentProfil = new Intent(context, ProfilActivity.class);
+                context.startActivity(intentProfil);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
     //####################################################################################################################################################
     //##### override the implemented method from asyncTask ###############################################################################################
     //####################################################################################################################################################
@@ -160,32 +188,32 @@ public class ListItemActivity extends Activity implements AsyncResponse{
                     recyclerView.setLayoutManager(layoutManager);
 
                     try {
-                        JSONArray results = (JSONArray) body.get("anime");
+                        //JSONArray results = (JSONArray) body.get(apiKeyJson);
+                        resultsFinal = (JSONArray) body.get(apiKeyJson);
+                        //resultsFinal = new JSONArray();
 
-                        JSONArray resultsFinal = new JSONArray();
+//                        for(int i=0;i<results.length();i++){
+//                            JSONArray elementGenres = results.getJSONObject(i).getJSONArray("genres");
+//
+//                            int checkComptRow = 0;
+//                            for(int k=0;k<elementGenres.length();k++) {
+//                                for(int l=0;l<genresChoosen.size();l++) {
+//                                    Log.i("jjjjjj", ""+genresChoosen.get(l)+"=="+elementGenres.getJSONObject(k).getString("name"));
+//                                    if(genresChoosen.get(l).equals(elementGenres.getJSONObject(k).getString("name"))) {
+//                                        checkComptRow++;
+//                                    }
+//                                }
+//                            }
+//
+//                            Log.i("jjjjjj", ""+checkComptRow);
+//
+//                            if(checkComptRow==genresChoosen.size()){
+//                                resultsFinal.put(results.getJSONObject(i));
+//                            }
+//
+//                        }
 
-                        for(int i=0;i<results.length();i++){
-                            JSONArray elementGenres = results.getJSONObject(i).getJSONArray("genres");
-
-                            int checkComptRow = 0;
-                            for(int k=0;k<elementGenres.length();k++) {
-                                for(int l=0;l<genresChoosen.size();l++) {
-                                    Log.i("jjjjjj", ""+genresChoosen.get(l)+"=="+elementGenres.getJSONObject(k).getString("name"));
-                                    if(genresChoosen.get(l).equals(elementGenres.getJSONObject(k).getString("name"))) {
-                                        checkComptRow++;
-                                    }
-                                }
-                            }
-
-                            Log.i("jjjjjj", ""+checkComptRow);
-
-                            if(checkComptRow==genresChoosen.size()){
-                                resultsFinal.put(results.getJSONObject(i));
-                            }
-
-                        }
-
-                        mAdapter = new ItemRowAdapter(resultsFinal);
+                        mAdapter = new ItemRowAdapter(resultsFinal, typeProcessed);
                         recyclerView.setAdapter(mAdapter);
                         initSwipe();
 
@@ -242,25 +270,25 @@ public class ListItemActivity extends Activity implements AsyncResponse{
                     int position = viewHolder.getAdapterPosition();
 
 
-                    SharedPreferences sharedPreferences = getSharedPreferences(ListItemActivity.globalPreferenceName, MODE_PRIVATE);
-                    String likes = sharedPreferences.getString("likes", "0");
-                    String disLikes = sharedPreferences.getString("disLikes", "0");
+                    SharedPreferences sharedPreferences = getSharedPreferences(ListPropositionActivity.globalPreferenceName, MODE_PRIVATE);
+                    String likesAnime = sharedPreferences.getString("likesAnime", "0");
+                    String likesMovie = sharedPreferences.getString("likesMovie", "0");
 
 
-                    JSONArray listLikes    = new JSONArray();
-                    JSONArray listDisLikes = new JSONArray();
+                    JSONArray listLikesAnime    = new JSONArray();
+                    JSONArray listLikesMovie    = new JSONArray();
 
-                    if (likes != null) {
+                    if (likesAnime != null) {
                         try {
-                            listLikes = new JSONArray(likes);
+                            listLikesAnime = new JSONArray(likesAnime);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
 
-                    if (disLikes != null) {
+                    if (likesMovie != null) {
                         try {
-                            listDisLikes = new JSONArray(disLikes);
+                            listLikesMovie = new JSONArray(likesMovie);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -270,17 +298,24 @@ public class ListItemActivity extends Activity implements AsyncResponse{
 
                     // TODO: More generic approache
 
-                    if (direction == ItemTouchHelper.LEFT) {
+                    if (direction == ItemTouchHelper.RIGHT) {
                         Toast.makeText(context, "Love", Toast.LENGTH_LONG).show();
                         try {
                             JSONObject jsonItem = ((ItemRowAdapter) mAdapter).updateLikes(position);
 
-                            // TODO: check if in JSONArray
-                            listLikes.put(jsonItem);
+                            // TODO: check if in JSONArray and Unlike a anime/movie
+                            if(typeProcessed==1) {
+                                listLikesAnime.put(jsonItem);
+                                editor.putString("likesAnime", listLikesAnime.toString());
+                            }
+                            else{
+                                listLikesMovie.put(jsonItem);
+                                editor.putString("likesMovie", listLikesMovie.toString());
+                            }
 
                             ((ItemRowAdapter) mAdapter).removeItem(position);
-                            editor.putString("likes", listLikes.toString());
                             editor.commit();
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -289,11 +324,10 @@ public class ListItemActivity extends Activity implements AsyncResponse{
                         try {
                             JSONObject jsonItem = ((ItemRowAdapter) mAdapter).updateLikes(position);
 
-                            listDisLikes.put(jsonItem);
-
-                            ((ItemRowAdapter) mAdapter).removeItem(position);
-                            editor.putString("disLikes", listDisLikes.toString());
-                            editor.commit();
+//                            listLikesAnime.put(jsonItem);
+//                            ((ItemRowAdapter) mAdapter).removeItem(position);
+//                            editor.putString("likesAnime", listLikesAnime.toString());
+//                            editor.commit();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -304,14 +338,8 @@ public class ListItemActivity extends Activity implements AsyncResponse{
                 @Override
                 public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
-
-                    Log.i("kkkkk", "--------------"+actionState);
-
                     Bitmap icon;
                     if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
-
-
-                        Log.i("kkkkk", "lmlmlllm");
 
                         View itemView = viewHolder.itemView;
                         float height = (float) itemView.getBottom() - (float) itemView.getTop();
@@ -328,7 +356,7 @@ public class ListItemActivity extends Activity implements AsyncResponse{
                             p.setColor(Color.parseColor("#D32F2F"));
                             RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(),(float) itemView.getRight(), (float) itemView.getBottom());
                             c.drawRect(background,p);
-                            icon = BitmapFactory.decodeResource(getResources(), R.drawable.icon_heart);
+                            icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_delete);
                             RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
                             c.drawBitmap(icon,null,icon_dest,p);
                         }
@@ -366,5 +394,45 @@ public class ListItemActivity extends Activity implements AsyncResponse{
 
             return writer.toString();
         }
+
+
+    private void initSearchView() {
+        MenuItem searchViewItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchViewItem.getActionView();
+        searchView.setIconifiedByDefault(false);
+        ActionBar.LayoutParams params = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
+        searchView.setLayoutParams(params);
+        searchViewItem.expandActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                JSONArray listFiltered = new JSONArray();
+
+                for(int i=0;i<resultsFinal.length();i++) {
+                    try {
+                        JSONObject jsonElement = resultsFinal.getJSONObject(i);
+
+                        if(jsonElement.getString("title").toLowerCase().contains(newText.toLowerCase())){
+                            listFiltered.put(jsonElement);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                mAdapter = new ItemRowAdapter(listFiltered, typeProcessed);
+                recyclerView.setAdapter(mAdapter);
+                return true;
+            }
+        });
+    }
+
 
 }

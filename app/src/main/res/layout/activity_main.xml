@@ -54,58 +54,33 @@
                     android:layout_marginEnd="0dp"
                     android:background="@android:color/transparent"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/down_arrow" />
+                    android:src="@drawable/up_arrow" />
 
                 <RelativeLayout
                     android:id="@+id/layoutTypeContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
                     android:layout_marginTop="40dp"
                     android:animateLayoutChanges="true"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <Button
-                        android:onClick="addType"
-                        android:id="@+id/typeFilms"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_above="@+id/typeSeries"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginBottom="-57dp"
-                        android:text="Films"
+                        android:id="@+id/typeMovie"
                         style="@style/ButtonGrey"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
-
-                    <Button
-                        android:onClick="addType"
-                        android:id="@+id/typeSeries"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginTop="65dp"
-                        android:text="Séries"
-                        style="@style/ButtonGrey"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
+                        android:onClick="addType"
+                        android:text="Movie" />
 
                     <Button
-                        android:onClick="addType"
-                        android:id="@+id/typeAnimes"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/typeSeries"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/animes"
+                        android:id="@+id/typeAnime"
                         style="@style/ButtonGrey"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
-
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/typeMovie"
+                        android:onClick="addType"
+                        android:text="Anime" />
 
                 </RelativeLayout>
 
@@ -152,191 +127,67 @@
                     <Button
                         android:id="@+id/genreAction"
                         style="@style/ButtonGrey"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:onClick="addGenreToList"
                         android:text="Action" />
 
                     <Button
-                        android:id="@+id/genreAdventure"
-                        style="@style/ButtonGrey"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_toEndOf="@+id/genreAction"
-                        android:onClick="addGenreToList"
-                        android:text="Adventure" />
-
-                    <Button
-                        android:id="@+id/genreMagics"
-                        style="@style/ButtonGrey"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_toEndOf="@+id/genreAdventure"
-                        android:onClick="addGenreToList"
-                        android:text="Magics" />
-
-                    <Button
-                        android:id="@+id/genreMecha"
+                        android:id="@+id/genreDrama"
                         style="@style/ButtonGrey"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_toEndOf="@+id/genreMagics"
-                        android:onClick="addGenreToList"
-                        android:text="Mecha" />
-
-                    <Button
-                        android:id="@+id/genreComedy"
-                        style="@style/ButtonGrey"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:layout_below="@+id/genreAction"
-                        android:layout_alignParentLeft="true"
-                        android:onClick="addGenreToList"
-                        android:text="Comedy" />
-
-                    <Button
-                        android:id="@+id/genrePolice"
-                        style="@style/ButtonGrey"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/genreAction"
-                        android:layout_toEndOf="@+id/genreComedy"
-                        android:onClick="addGenreToList"
-                        android:text="Police" />
-
-                    <Button
-                        android:id="@+id/genreDrama"
-                        style="@style/ButtonGrey"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/genreAction"
-                        android:layout_toEndOf="@+id/genrePolice"
                         android:onClick="addGenreToList"
                         android:text="Drama" />
 
                     <Button
-                        android:id="@+id/genreSchool"
-                        style="@style/ButtonGrey"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/genreAction"
-                        android:layout_toEndOf="@+id/genreDrama"
-                        android:onClick="addGenreToList"
-                        android:text="School" />
-
-                    <Button
-                        android:id="@+id/genreSliceOfLife"
-                        style="@style/ButtonGrey"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/genreComedy"
-                        android:layout_alignParentLeft="true"
-                        android:onClick="addGenreToList"
-                        android:text="Slice of Life" />
-
-                    <Button
                         android:id="@+id/genreSciFi"
                         style="@style/ButtonGrey"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/genreComedy"
-                        android:layout_toEndOf="@+id/genreSliceOfLife"
-                        android:onClick="addGenreToList"
-                        android:text="Sci-fi" />
-
-                    <Button
-                        android:id="@+id/genreHistory"
-                        style="@style/ButtonGrey"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/genreComedy"
-                        android:layout_toEndOf="@+id/genreSciFi"
+                        android:layout_below="@+id/genreDrama"
                         android:onClick="addGenreToList"
-                        android:text="Historical" />
-
-                    <Button
-                        android:id="@+id/genreShojo"
-                        style="@style/ButtonGrey"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/genreSliceOfLife"
-                        android:layout_alignParentLeft="true"
-                        android:onClick="addGenreToList"
-                        android:text="Shôjo" />
-
-                    <Button
-                        android:id="@+id/genreShonen"
-                        style="@style/ButtonGrey"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/genreSliceOfLife"
-                        android:layout_toEndOf="@+id/genreShojo"
-                        android:onClick="addGenreToList"
-                        android:text="Shônen" />
-
-                    <Button
-                        android:id="@+id/genreSeinen"
-                        style="@style/ButtonGrey"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/genreSliceOfLife"
-                        android:layout_toEndOf="@+id/genreShonen"
-                        android:onClick="addGenreToList"
-                        android:text="Seinen" />
+                        android:text="Science Fiction" />
 
                     <Button
                         android:id="@+id/genreFantasy"
                         style="@style/ButtonGrey"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/genreSliceOfLife"
-                        android:layout_toEndOf="@+id/genreSeinen"
+                        android:layout_below="@+id/genreSciFi"
                         android:onClick="addGenreToList"
                         android:text="Fantasy" />
 
                     <Button
-                        android:id="@+id/genreMystery"
+                        android:id="@+id/genreComedy"
                         style="@style/ButtonGrey"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/genreShojo"
-                        android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/genreFantasy"
                         android:onClick="addGenreToList"
-                        android:text="Mystery" />
+                        android:text="Comedy" />
 
                     <Button
                         android:id="@+id/genreRomance"
                         style="@style/ButtonGrey"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/genreShojo"
-                        android:layout_toEndOf="@+id/genreMystery"
+                        android:layout_below="@+id/genreComedy"
                         android:onClick="addGenreToList"
                         android:text="Romance" />
 
                     <Button
-                        android:id="@+id/genreHorror"
-                        style="@style/ButtonGrey"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/genreShojo"
-                        android:layout_toEndOf="@+id/genreRomance"
-                        android:onClick="addGenreToList"
-                        android:text="Horror" />
-
-                    <Button
-                        android:id="@+id/genreMusic"
+                        android:id="@+id/genreThriller"
                         style="@style/ButtonGrey"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/genreShojo"
-                        android:layout_toEndOf="@+id/genreHorror"
+                        android:layout_below="@+id/genreRomance"
                         android:onClick="addGenreToList"
-                        android:text="Music" />
+                        android:text="Thriller" />
+
+
 
                 </RelativeLayout>
 
