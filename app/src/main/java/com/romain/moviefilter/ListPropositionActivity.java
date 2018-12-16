@@ -58,6 +58,7 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
     private AsyncResponse asyncR;
 
     private String url;
+    private String[] urls = new String[5];
 
     private ArrayList<String> genresChoosen;
 
@@ -114,7 +115,7 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
                 typeProcessed = 0;
 
                 int genreId = 0;
-                int page = 1;
+                int page;
 
                 try {
                     genreId = jsonGenresMovie.getInt(genresChoosen.get(0));
@@ -122,14 +123,20 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
                     e.printStackTrace();
                 }
 
-                //url = "https://api.themoviedb.org/3/movie/top_rated?api_key=fbaaf7792a566ae6c637bab86098f3d3&language=en-US&page=1";
-                url = "https://api.themoviedb.org/3/discover/movie?api_key=fbaaf7792a566ae6c637bab86098f3d3" +
-                        "&language=en-US" +
-                        "&sort_by=popularity.desc" +
-                        "&with_genres=" + genreId +
-                        "&include_adult=false" +
-                        "&include_video=false" +
-                        "&page="  + page;
+                for (int i = 1; i < 6; i++) {
+                    page = i;
+                    //url = "https://api.themoviedb.org/3/movie/top_rated?api_key=fbaaf7792a566ae6c637bab86098f3d3&language=en-US&page=1";
+                    url = "https://api.themoviedb.org/3/discover/movie?" +
+                            "api_key=fbaaf7792a566ae6c637bab86098f3d3" +
+                            "&language=en-US" +
+                            "&sort_by=vote_average.desc" +
+                            "&vote_count.gte=1000" +
+                            "&with_genres=" + genreId +
+                            "&include_adult=false" +
+                            "&include_video=false" +
+                            "&page=" + page;
+                    urls[i-1] = url;
+                }
             }
             else{
                 // Contact API
@@ -145,7 +152,7 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
 
                 int page = 1;
 
-                url = String.format("https://api.jikan.moe/v3/genre/%s/%d/%d", "anime", genreId, page);
+                urls[0] = String.format("https://api.jikan.moe/v3/genre/%s/%d/%d", "anime", genreId, page);
             }
 
             Log.i("oooo", type);
@@ -155,7 +162,7 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
             retrieveJsonTask.delegate = asyncR;
 
             retrieveJsonTask.setApiKeyJson(apiKeyJson);
-            retrieveJsonTask.execute(url);
+            retrieveJsonTask.execute(urls);
 
             // Set navbar
             ActionBar actionBar = getActionBar();
@@ -295,12 +302,11 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
 
 
                     SharedPreferences sharedPreferences = getSharedPreferences(ListPropositionActivity.globalPreferenceName, MODE_PRIVATE);
-                    String likesAnime = sharedPreferences.getString("likesAnime", "0");
-                    String likesMovie = sharedPreferences.getString("likesMovie", "0");
+                    String likesAnime = sharedPreferences.getString("likesAnime", "[]");
+                    String likesMovie = sharedPreferences.getString("likesMovie", "[]");
 
-
-                    JSONArray listLikesAnime    = new JSONArray();
-                    JSONArray listLikesMovie    = new JSONArray();
+                    JSONArray listLikesAnime = new JSONArray();
+                    JSONArray listLikesMovie = new JSONArray();
 
                     if (likesAnime != null) {
                         try {
@@ -349,7 +355,7 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
                             JSONObject jsonItem = ((ItemRowAdapter) mAdapter).updateLikes(position);
 
 //                            listLikesAnime.put(jsonItem);
-//                            ((ItemRowAdapter) mAdapter).removeItem(position);
+                           ((ItemRowAdapter) mAdapter).removeItem(position);
 //                            editor.putString("likesAnime", listLikesAnime.toString());
 //                            editor.commit();
                         } catch (JSONException e) {

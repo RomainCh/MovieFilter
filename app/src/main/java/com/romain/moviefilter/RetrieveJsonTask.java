@@ -25,23 +25,39 @@ public class RetrieveJsonTask extends AsyncTask<String, Void, JSONArray> {
     //##### Première étape: on récupére le json associé à l'URL de l'API donné #############################
     //######################################################################################################
 
-        protected JSONArray doInBackground(String... urls) {
+    protected JSONArray doInBackground(String... urls) {
 
-            JSONArray json = null;
+        JSONArray json = new JSONArray();
 
-            try {
+        try {
+            if (apiKeyJson.equals("results")) {
+                for (int i = 0; i < urls.length; i++) {
+                    JSONObject jsonObjectTemp = new JSONObject(IOUtils.toString(new URL(urls[i]), Charset.forName("UTF-8")));
+                    JSONArray jsonArrayTemp = jsonObjectTemp.getJSONArray(apiKeyJson);
+                    for (int j = 0; j < jsonArrayTemp.length(); j++) {
+                        json.put(jsonArrayTemp.get(j));
+                    }
+                    Log.i("(Info) ", "->" + i + json.length());
+                }
+            } else {
                 JSONObject jsonTemp = new JSONObject(IOUtils.toString(new URL(urls[0]), Charset.forName("UTF-8")));
                 json = (JSONArray) jsonTemp.get(apiKeyJson);
-                Log.i("(Info) ", "->"+json.length());
-
-            } catch (IOException e) {
-                Log.i("(Error)", "-> "+e);
-            } catch (JSONException e) {
-                Log.i("(Error)", "->"+e);
+                Log.i("(Info) ", "->" + json.length());
             }
 
-            return json;
+        } catch (IOException e) {
+            Log.i("(Error)", "-> "+e);
+        } catch (JSONException e) {
+            Log.i("(Error)", "->"+e);
         }
+
+        if(json.length()==0){
+            json = null;
+        }
+
+        Log.i("JSON-MDR", json.toString());
+        return json;
+    }
 
     //######################################################################################################
     //##### Deuxième étape:                                                                    #############
@@ -49,16 +65,16 @@ public class RetrieveJsonTask extends AsyncTask<String, Void, JSONArray> {
     //##### - On appelle la méthode processFinish de l'activité parente de l'AsyncTask         #############
     //######################################################################################################
 
-        protected void onPostExecute(JSONArray json) {
+    protected void onPostExecute(JSONArray json) {
 
-            if(json!=null) {
-                Log.i("(Info)", "Json is not null");
-            }
-
-            delegate.processFinish(json);
+        if(json!=null) {
+            Log.i("(Info)", "Json is not null");
         }
 
-        public void setApiKeyJson(String apiKeyJson){
-            this.apiKeyJson = apiKeyJson;
-        }
+        delegate.processFinish(json);
+    }
+
+    public void setApiKeyJson(String apiKeyJson){
+        this.apiKeyJson = apiKeyJson;
+    }
 }

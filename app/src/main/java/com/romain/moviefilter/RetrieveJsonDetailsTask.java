@@ -43,13 +43,11 @@ public class RetrieveJsonDetailsTask extends AsyncTask<String, Void, JSONObject>
     //######################################################################################################
 
     protected void onPostExecute(JSONObject json) {
-        try {
-            if(json!=null) {
-                Log.i("(Info)", "" + (json == null) + "  " + json.getString("item_count"));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+        if(json!=null) {
+            Log.i("(Info)", "Json is not null");
         }
+
         delegate.processFinish(json);
     }
 }
