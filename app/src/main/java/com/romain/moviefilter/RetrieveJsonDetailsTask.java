@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,32 +15,26 @@ import java.nio.charset.Charset;
  * Created by romain on 27/11/18.
  */
 
-public class RetrieveJsonTask extends AsyncTask<String, Void, JSONArray> {
+public class RetrieveJsonDetailsTask extends AsyncTask<String, Void, JSONObject> {
 
     public AsyncResponse delegate = null;
-    public String apiKeyJson = null;
 
     //######################################################################################################
     //##### Première étape: on récupére le json associé à l'URL de l'API donné #############################
     //######################################################################################################
 
-        protected JSONArray doInBackground(String... urls) {
-
-            JSONArray json = null;
-
-            try {
-                JSONObject jsonTemp = new JSONObject(IOUtils.toString(new URL(urls[0]), Charset.forName("UTF-8")));
-                json = (JSONArray) jsonTemp.get(apiKeyJson);
-                Log.i("(Info) ", "->"+json.length());
-
-            } catch (IOException e) {
-                Log.i("(Error)", "-> "+e);
-            } catch (JSONException e) {
-                Log.i("(Error)", "->"+e);
-            }
-
-            return json;
+    protected JSONObject doInBackground(String... urls) {
+        JSONObject json = null;
+        try {
+            json = new JSONObject(IOUtils.toString(new URL(urls[0]), Charset.forName("UTF-8")));
+            Log.i("(Info) ", "->"+json.length());
+        } catch (IOException e) {
+            Log.i("(Error)", "-> "+e);
+        } catch (JSONException e) {
+            Log.i("(Error)", "->"+e);
         }
+        return json;
+    }
 
     //######################################################################################################
     //##### Deuxième étape:                                                                    #############
@@ -49,16 +42,14 @@ public class RetrieveJsonTask extends AsyncTask<String, Void, JSONArray> {
     //##### - On appelle la méthode processFinish de l'activité parente de l'AsyncTask         #############
     //######################################################################################################
 
-        protected void onPostExecute(JSONArray json) {
-
+    protected void onPostExecute(JSONObject json) {
+        try {
             if(json!=null) {
-                Log.i("(Info)", "Json is not null");
+                Log.i("(Info)", "" + (json == null) + "  " + json.getString("item_count"));
             }
-
-            delegate.processFinish(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-
-        public void setApiKeyJson(String apiKeyJson){
-            this.apiKeyJson = apiKeyJson;
-        }
+        delegate.processFinish(json);
+    }
 }

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -26,7 +27,7 @@ public class MovieDetailsActivity extends Activity implements AsyncResponse {
     private String url;
     private int movie_id;
 
-    private RetrieveJsonTask retrieveJson = new RetrieveJsonTask();
+    private RetrieveJsonDetailsTask retrieveJson = new RetrieveJsonDetailsTask();
     private AsyncResponse asyncR;
 
     private Context context;
@@ -101,6 +102,11 @@ public class MovieDetailsActivity extends Activity implements AsyncResponse {
                 return true;
         }
         return (super.onOptionsItemSelected(menuItem));
+    }
+
+    @Override
+    public void processFinish(JSONArray json) {
+        Log.i("(Error)", "Not the right method summoned");
     }
 
     @Override

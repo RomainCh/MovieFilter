@@ -88,52 +88,74 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
 
             // Process the genres
 
-                genresChoosen = getIntent().getStringArrayListExtra("genres");
+            genresChoosen = getIntent().getStringArrayListExtra("genres");
 
-                Toast.makeText(this, genresChoosen.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, genresChoosen.toString(), Toast.LENGTH_LONG).show();
 
-                    JSONObject jsonGenres = null;
-                    try {
-                        String jsonString = getGenres(R.raw.genres_animes);
-                        jsonGenres = new JSONObject(jsonString);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+            JSONObject jsonGenres = null;
+            JSONObject jsonGenresMovie = null;
+            try {
+                String jsonString = getGenres(R.raw.genres_animes);
+                String jsonStringMovie = getGenres(R.raw.genres_movies);
+                jsonGenres = new JSONObject(jsonString);
+                jsonGenresMovie = new JSONObject(jsonStringMovie);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-                Bundle bundle = getIntent().getExtras();
-                String type = bundle.getString("type");
+            Bundle bundle = getIntent().getExtras();
+            String type = bundle.getString("type");
 
-                if(type.equals("Movie")){
-                    // Contact API
-                    apiKeyJson = "results";
-                    typeProcessed = 0;
-                    url = "https://api.themoviedb.org/3/movie/top_rated?api_key=fbaaf7792a566ae6c637bab86098f3d3&language=en-US&page=1";
-                }
-                else{
-                    // Contact API
-                    apiKeyJson = "anime";
-                    typeProcessed = 1;
-                        int genreId = 0;
+            if(type.equals("Movie")){
+                // Contact API
+                apiKeyJson = "results";
+                typeProcessed = 0;
 
-                        try {
-                            genreId = jsonGenres.getInt(genresChoosen.get(0));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                int genreId = 0;
+                int page = 1;
 
-                        int page = 1;
-
-                    url = String.format("https://api.jikan.moe/v3/genre/%s/%d/%d", "anime", genreId, page);
+                try {
+                    genreId = jsonGenresMovie.getInt(genresChoosen.get(0));
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
-                Log.i("oooo", type);
+                //url = "https://api.themoviedb.org/3/movie/top_rated?api_key=fbaaf7792a566ae6c637bab86098f3d3&language=en-US&page=1";
+                url = "https://api.themoviedb.org/3/discover/movie?api_key=fbaaf7792a566ae6c637bab86098f3d3" +
+                        "&language=en-US" +
+                        "&sort_by=popularity.desc" +
+                        "&with_genres=" + genreId +
+                        "&include_adult=false" +
+                        "&include_video=false" +
+                        "&page="  + page;
+            }
+            else{
+                // Contact API
+                apiKeyJson = "anime";
+                typeProcessed = 1;
+                int genreId = 0;
+
+                try {
+                    genreId = jsonGenres.getInt(genresChoosen.get(0));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                int page = 1;
+
+                url = String.format("https://api.jikan.moe/v3/genre/%s/%d/%d", "anime", genreId, page);
+            }
+
+            Log.i("oooo", type);
 
 
-                AsyncResponse asyncR  = this;
-                retrieveJsonTask.delegate = asyncR;
-                retrieveJsonTask.execute(url);
+            AsyncResponse asyncR  = this;
+            retrieveJsonTask.delegate = asyncR;
+
+            retrieveJsonTask.setApiKeyJson(apiKeyJson);
+            retrieveJsonTask.execute(url);
 
             // Set navbar
             ActionBar actionBar = getActionBar();
@@ -176,7 +198,7 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
     //####################################################################################################################################################
 
         @Override
-        public void processFinish(JSONObject body) {
+        public void processFinish(JSONArray body) {
 
             //#############################################################################
             //##### Si le json venant de l'API n'est pas null #############################
@@ -187,9 +209,9 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
                     layoutManager = new LinearLayoutManager(this);
                     recyclerView.setLayoutManager(layoutManager);
 
-                    try {
+
                         //JSONArray results = (JSONArray) body.get(apiKeyJson);
-                        resultsFinal = (JSONArray) body.get(apiKeyJson);
+                        resultsFinal = body;
                         //resultsFinal = new JSONArray();
 
 //                        for(int i=0;i<results.length();i++){
@@ -217,9 +239,6 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
                         recyclerView.setAdapter(mAdapter);
                         initSwipe();
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
                 }
 
 
@@ -250,6 +269,11 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
                 }
 
         }
+
+    @Override
+    public void processFinish(JSONObject json) {
+        Log.i("(Error)", "Not the right method summoned");
+    }
 
     //####################################################################################################################################################
     //##### initSwipe method (Pour activer le glissement sur les lignes de la RecycleView) ###############################################################

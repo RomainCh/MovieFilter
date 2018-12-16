@@ -1,5 +1,6 @@
 package com.romain.moviefilter;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -7,5 +8,6 @@ import org.json.JSONObject;
  */
 
 public interface AsyncResponse {
+    void processFinish(JSONArray json);
     void processFinish(JSONObject json);
 }
