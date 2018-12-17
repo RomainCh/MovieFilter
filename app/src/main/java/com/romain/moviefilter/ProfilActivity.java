@@ -187,87 +187,99 @@ public class ProfilActivity extends Activity {
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_main_actions, menu);
-        MenuItem itemProfil = menu.findItem(R.id.action_showProfil);
-//        MenuItem itemSearch = menu.findItem(R.id.action_search);
-        itemProfil.setVisible(false);
-//        itemSearch.setVisible(false);
-        this.menu = menu;
-        return super.onCreateOptionsMenu(menu);
-    }
+    //#############################################################################
+    //##### Gestion du menu de la toolbar #########################################
+    //#############################################################################
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_search:
-                initSearchView();
-                return true;
-            case R.id.action_goHome:
-                Intent intentHome = new Intent(context, MainActivity.class);
-                context.startActivity(intentHome);
-                return true;
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.activity_main_actions, menu);
+            MenuItem itemProfil = menu.findItem(R.id.action_showProfil);
+    //        MenuItem itemSearch = menu.findItem(R.id.action_search);
+            itemProfil.setVisible(false);
+    //        itemSearch.setVisible(false);
+            this.menu = menu;
+            return super.onCreateOptionsMenu(menu);
         }
-        return super.onOptionsItemSelected(item);
-    }
 
-    private void initSearchView() {
-        MenuItem searchViewItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchViewItem.getActionView();
-        searchView.setIconifiedByDefault(false);
-        ActionBar.LayoutParams params = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
-        searchView.setLayoutParams(params);
-        searchViewItem.expandActionView();
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return true;
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            switch (item.getItemId()){
+                case R.id.action_search:
+                    initSearchView();
+                    return true;
+                case R.id.action_goHome:
+                    Intent intentHome = new Intent(context, MainActivity.class);
+                    context.startActivity(intentHome);
+                    return true;
             }
+            return super.onOptionsItemSelected(item);
+        }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
+    //#############################################################################
+    //##### Méthode initiant la SearchView ########################################
+    //#############################################################################
 
-                JSONArray listLikesFiltered = new JSONArray();
+        private void initSearchView() {
+            MenuItem searchViewItem = menu.findItem(R.id.action_search);
+            SearchView searchView = (SearchView) searchViewItem.getActionView();
+            searchView.setIconifiedByDefault(false);
+            ActionBar.LayoutParams params = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
+            searchView.setLayoutParams(params);
+            searchViewItem.expandActionView();
 
-                for(int i=0;i<listLikes.get(cursor).length();i++) {
-                    try {
-                        JSONObject jsonElement = listLikes.get(cursor).getJSONObject(i);
-
-                        if(jsonElement.getString("title").toLowerCase().contains(newText.toLowerCase())){
-                            listLikesFiltered.put(jsonElement);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return true;
                 }
 
-                mAdapter = new ItemRowAdapter(listLikesFiltered, cursor);
-                recyclerView.setAdapter(mAdapter);
-                return true;
-            }
-        });
-    }
+                @Override
+                public boolean onQueryTextChange(String newText) {
 
-    public void selectFilter(View v) {
+                    JSONArray listLikesFiltered = new JSONArray();
 
-        v.getBackground().setAlpha(100);
+                    for(int i=0;i<listLikes.get(cursor).length();i++) {
+                        try {
+                            JSONObject jsonElement = listLikes.get(cursor).getJSONObject(i);
 
-        for (int i = 0; i < btnsId.length; i++){
-            Button btn = (Button) findViewById(btnsId[i]);
-            if(btn.getId() != v.getId()) {
-                btn.getBackground().setAlpha(255);
-            }
-            else{
-                cursor = i;
-            }
+                            if(jsonElement.getString("title").toLowerCase().contains(newText.toLowerCase())){
+                                listLikesFiltered.put(jsonElement);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    mAdapter = new ItemRowAdapter(listLikesFiltered, cursor);
+                    recyclerView.setAdapter(mAdapter);
+                    return true;
+                }
+            });
         }
 
-        mAdapter = new ItemRowAdapter(listLikes.get(cursor), cursor);
-        recyclerView.setAdapter(mAdapter);
+    //####################################################################################################################################################
+    //##### Utils methods ################################################################################################################################
+    //####################################################################################################################################################
 
-    }
+        public void selectFilter(View v) {
+
+            v.getBackground().setAlpha(100);
+
+            for (int i = 0; i < btnsId.length; i++){
+                Button btn = (Button) findViewById(btnsId[i]);
+                if(btn.getId() != v.getId()) {
+                    btn.getBackground().setAlpha(255);
+                }
+                else{
+                    cursor = i;
+                }
+            }
+
+            mAdapter = new ItemRowAdapter(listLikes.get(cursor), cursor);
+            recyclerView.setAdapter(mAdapter);
+
+        }
 
 }

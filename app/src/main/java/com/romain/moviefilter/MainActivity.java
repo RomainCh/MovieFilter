@@ -1,16 +1,20 @@
 package com.romain.moviefilter;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -115,12 +119,54 @@ public class MainActivity extends Activity {
                     }
                 });
 
+
+            // Set navbar
+            final ActionBar actionBar = getActionBar();
+
+            SharedPreferences sharedPreferences = getSharedPreferences(ListPropositionActivity.globalPreferenceName, MODE_PRIVATE);
+
+
+            if(!sharedPreferences.getBoolean("SetUsername", false)){
+                findViewById(R.id.mainScrollView).setVisibility(View.GONE);
+                findViewById(R.id.mainEditUsername).setVisibility(View.VISIBLE);
+                SharedPreferences.Editor editor = getSharedPreferences(ListPropositionActivity.globalPreferenceName, MODE_PRIVATE).edit();
+
+                final Button btnSubmit = (Button) findViewById(R.id.btnValidateUsername);
+
+                btnSubmit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        EditText usernameEditText = (EditText) findViewById(R.id.editTextUsername);
+
+                        String usernameString = usernameEditText.getText().toString();
+
+                        SharedPreferences.Editor editor = getSharedPreferences(ListPropositionActivity.globalPreferenceName, MODE_PRIVATE).edit();
+                        editor.putString("Username", usernameString);
+                        editor.putBoolean("SetUsername", true);
+                        editor.commit();
+
+                        actionBar.setTitle(String.format("Hi %s !", usernameString));
+                        findViewById(R.id.mainEditUsername).setVisibility(View.GONE);
+                        findViewById(R.id.mainScrollView).setVisibility(View.VISIBLE);
+
+                    }
+                });
+            }
+            else{
+                actionBar.setTitle(String.format("Hi %s !", sharedPreferences.getString("Username", "visitor")));
+            }
+
+
         }
 
         private void initButtonRequest() {
             buttonRequest.setTextColor(Color.parseColor(colorButtonRequestDisabled));
             buttonRequest.getBackground().setAlpha(initButtonRequestAlpha);
         }
+
+    //#############################################################################
+    //##### Gestion du menu de la toolbar #########################################
+    //#############################################################################
 
         @Override
         public boolean onCreateOptionsMenu(Menu menu) {

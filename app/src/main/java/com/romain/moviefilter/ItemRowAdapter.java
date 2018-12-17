@@ -236,9 +236,9 @@ public class ItemRowAdapter extends RecyclerView.Adapter<ItemRowAdapter.ViewHold
             return genresArray;
         }
 
-    private String rightFormatDate(String releaseDate) {
-        String[] dateParts = releaseDate.split("-");
-        return String.format("%s/%s/%s", dateParts[2], dateParts[1], dateParts[0]);
-    }
+        private String rightFormatDate(String releaseDate) {
+            String[] dateParts = releaseDate.split("-");
+            return String.format("%s/%s/%s", dateParts[2], dateParts[1], dateParts[0]);
+        }
 
 }

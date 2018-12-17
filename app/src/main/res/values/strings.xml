@@ -14,4 +14,5 @@
     <string name="txtSearch">Search</string>
     <string name="go_to_my_profil">Go to my profil</string>
     <string name="txtHomeReturnAction">Return home</string>
+    <string name="txtFirstAccueil">I\'ve never seen you before... What is your name ?</string>
 </resources>

@@ -65,16 +65,20 @@ public class RetrieveJsonTask extends AsyncTask<String, Void, JSONArray> {
     //##### - On appelle la méthode processFinish de l'activité parente de l'AsyncTask         #############
     //######################################################################################################
 
-    protected void onPostExecute(JSONArray json) {
+        protected void onPostExecute(JSONArray json) {
 
-        if(json!=null) {
-            Log.i("(Info)", "Json is not null");
+            if(json!=null) {
+                Log.i("(Info)", "Json is not null");
+            }
+
+            delegate.processFinish(json);
         }
 
-        delegate.processFinish(json);
-    }
+    //#############################################################################
+    //##### Setters ###############################################################
+    //#############################################################################
 
-    public void setApiKeyJson(String apiKeyJson){
-        this.apiKeyJson = apiKeyJson;
-    }
+        public void setApiKeyJson(String apiKeyJson){
+            this.apiKeyJson = apiKeyJson;
+        }
 }

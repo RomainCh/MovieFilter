@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="bgColor">#221f1f</color>
-    <color name="white">#FFFFFF</color>
+    <color name="white">#ffffff</color>
     <color name="red">#B9090B</color>
     <color name="bgScoreColor">#141414</color>
     <color name="bgColorDarkLight">#282a36</color>

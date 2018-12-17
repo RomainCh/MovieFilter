@@ -157,9 +157,6 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
                 urls[0] = String.format("https://api.jikan.moe/v3/genre/%s/%d/%d", "anime", genreId, page);
             }
 
-            Log.i("oooo", type);
-
-
             AsyncResponse asyncR  = this;
             retrieveJsonTask.delegate = asyncR;
 
@@ -174,33 +171,37 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
             actionBar.setDisplayShowHomeEnabled(true);
         }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_main_actions, menu);
-        MenuItem itemHome = menu.findItem(R.id.action_goHome);
-        itemHome.setVisible(false);
-        this.menu = menu;
-        return super.onCreateOptionsMenu(menu);
-    }
+    //#############################################################################
+    //##### Gestion du menu de la toolbar #########################################
+    //#############################################################################
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_search:
-                initSearchView();
-                return true;
-            case R.id.action_goHome:
-                Intent intentHome = new Intent(context, MainActivity.class);
-                context.startActivity(intentHome);
-                return true;
-            case R.id.action_showProfil:
-                Intent intentProfil = new Intent(context, ProfilActivity.class);
-                context.startActivity(intentProfil);
-                return true;
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.activity_main_actions, menu);
+            MenuItem itemHome = menu.findItem(R.id.action_goHome);
+            itemHome.setVisible(false);
+            this.menu = menu;
+            return super.onCreateOptionsMenu(menu);
         }
-        return super.onOptionsItemSelected(item);
-    }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            switch (item.getItemId()){
+                case R.id.action_search:
+                    initSearchView();
+                    return true;
+                case R.id.action_goHome:
+                    Intent intentHome = new Intent(context, MainActivity.class);
+                    context.startActivity(intentHome);
+                    return true;
+                case R.id.action_showProfil:
+                    Intent intentProfil = new Intent(context, ProfilActivity.class);
+                    context.startActivity(intentProfil);
+                    return true;
+            }
+            return super.onOptionsItemSelected(item);
+        }
     
     //####################################################################################################################################################
     //##### override the implemented method from asyncTask ###############################################################################################
@@ -220,70 +221,23 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
                         layoutManager = new LinearLayoutManager(this);
                         recyclerView.setLayoutManager(layoutManager);
 
-
-                        //JSONArray results = (JSONArray) body.get(apiKeyJson);
                         resultsFinal = body;
-                        //resultsFinal = new JSONArray();
 
-                        //                        for(int i=0;i<results.length();i++){
-                        //                            JSONArray elementGenres = results.getJSONObject(i).getJSONArray("genres");
-                        //
-                        //                            int checkComptRow = 0;
-                        //                            for(int k=0;k<elementGenres.length();k++) {
-                        //                                for(int l=0;l<genresChoosen.size();l++) {
-                        //                                    Log.i("jjjjjj", ""+genresChoosen.get(l)+"=="+elementGenres.getJSONObject(k).getString("name"));
-                        //                                    if(genresChoosen.get(l).equals(elementGenres.getJSONObject(k).getString("name"))) {
-                        //                                        checkComptRow++;
-                        //                                    }
-                        //                                }
-                        //                            }
-                        //
-                        //                            Log.i("jjjjjj", ""+checkComptRow);
-                        //
-                        //                            if(checkComptRow==genresChoosen.size()){
-                        //                                resultsFinal.put(results.getJSONObject(i));
-                        //                            }
-                        //
-                        //                        }
+                        if(resultsFinal.length()>0) {
 
-                        mAdapter = new ItemRowAdapter(resultsFinal, typeProcessed);
-                        recyclerView.setAdapter(mAdapter);
-                        initSwipe();
+                            mAdapter = new ItemRowAdapter(resultsFinal, typeProcessed);
+                            recyclerView.setAdapter(mAdapter);
+                            initSwipe();
+                        }
+                        else{
+                            noResults();
+                        }
                     }
                     else{
-
-                        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-                        findViewById(R.id.progressBar).setVisibility(View.GONE);
-
-                        if(isConnected) {
-
-                            TextView txtError = (TextView) findViewById(R.id.errorTxtLoading);
-                            final RelativeLayout layoutError = (RelativeLayout) findViewById(R.id.errorLoadingLayout);
-                            txtError.setText("No results found");
-
-                            Button retryBtn = (Button) findViewById(R.id.retryButton);
-                            retryBtn.getBackground().setAlpha(64);
-
-                            layoutError.setVisibility(View.VISIBLE);
-
-                            retryBtn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-                                    layoutError.setVisibility(View.GONE);
-                                    finish();
-                                    Intent intentHome = new Intent(context, MainActivity.class);
-                                    context.startActivity(intentHome);
-                                }
-                            });
-                        }
-
+                        noResults();
                     }
 
                 }
-
 
             //#############################################################################
             //##### Si le json venant de l'API est null ###################################
@@ -315,6 +269,7 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
                 }
 
         }
+
 
     @Override
     public void processFinish(JSONObject json) {
@@ -419,12 +374,7 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
 
                     } else {
                         Toast.makeText(context, "Don't want to see", Toast.LENGTH_LONG).show();
-
-//                            listLikesAnime.put(jsonItem);
                         ((ItemRowAdapter) mAdapter).removeItem(position);
-//                            editor.putString("likesAnime", listLikesAnime.toString());
-//                            editor.commit();
-
                     }
                 }
 
@@ -489,44 +439,77 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
             return writer.toString();
         }
 
+        private void noResults() {
+            ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+            findViewById(R.id.progressBar).setVisibility(View.GONE);
 
-    private void initSearchView() {
-        MenuItem searchViewItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchViewItem.getActionView();
-        searchView.setIconifiedByDefault(false);
-        ActionBar.LayoutParams params = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
-        searchView.setLayoutParams(params);
-        searchViewItem.expandActionView();
+            if(isConnected) {
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return true;
-            }
+                TextView txtError = (TextView) findViewById(R.id.errorTxtLoading);
+                final RelativeLayout layoutError = (RelativeLayout) findViewById(R.id.errorLoadingLayout);
+                txtError.setText("No results found");
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
+                Button retryBtn = (Button) findViewById(R.id.retryButton);
+                retryBtn.getBackground().setAlpha(64);
 
-                JSONArray listFiltered = new JSONArray();
+                layoutError.setVisibility(View.VISIBLE);
 
-                for(int i=0;i<resultsFinal.length();i++) {
-                    try {
-                        JSONObject jsonElement = resultsFinal.getJSONObject(i);
-
-                        if(jsonElement.getString("title").toLowerCase().contains(newText.toLowerCase())){
-                            listFiltered.put(jsonElement);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                retryBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+                        layoutError.setVisibility(View.GONE);
+                        finish();
+                        Intent intentHome = new Intent(context, MainActivity.class);
+                        context.startActivity(intentHome);
                     }
+                });
+            }
+        }
+
+    //#############################################################################
+    //##### Méthode initiant la SearchView ########################################
+    //#############################################################################
+
+        private void initSearchView() {
+            MenuItem searchViewItem = menu.findItem(R.id.action_search);
+            SearchView searchView = (SearchView) searchViewItem.getActionView();
+            searchView.setIconifiedByDefault(false);
+            ActionBar.LayoutParams params = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
+            searchView.setLayoutParams(params);
+            searchViewItem.expandActionView();
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return true;
                 }
 
-                mAdapter = new ItemRowAdapter(listFiltered, typeProcessed);
-                recyclerView.setAdapter(mAdapter);
-                return true;
-            }
-        });
-    }
+                @Override
+                public boolean onQueryTextChange(String newText) {
+
+                    JSONArray listFiltered = new JSONArray();
+
+                    for(int i=0;i<resultsFinal.length();i++) {
+                        try {
+                            JSONObject jsonElement = resultsFinal.getJSONObject(i);
+
+                            if(jsonElement.getString("title").toLowerCase().contains(newText.toLowerCase())){
+                                listFiltered.put(jsonElement);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    mAdapter = new ItemRowAdapter(listFiltered, typeProcessed);
+                    recyclerView.setAdapter(mAdapter);
+                    return true;
+                }
+            });
+        }
 
 
 }
