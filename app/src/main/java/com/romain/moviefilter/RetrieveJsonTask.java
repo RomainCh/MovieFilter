@@ -52,7 +52,7 @@ public class RetrieveJsonTask extends AsyncTask<String, Void, JSONArray> {
         }
 
         if(json.length()==0){
-            json = null;
+            return null;
         }
 
         Log.i("JSON-MDR", json.toString());

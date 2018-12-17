@@ -12,6 +12,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -212,39 +214,73 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
             //#############################################################################
 
                 if(body!=null) {
-                    findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                    layoutManager = new LinearLayoutManager(this);
-                    recyclerView.setLayoutManager(layoutManager);
+
+                    if(body.length()!=0) {
+                        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                        layoutManager = new LinearLayoutManager(this);
+                        recyclerView.setLayoutManager(layoutManager);
 
 
                         //JSONArray results = (JSONArray) body.get(apiKeyJson);
                         resultsFinal = body;
                         //resultsFinal = new JSONArray();
 
-//                        for(int i=0;i<results.length();i++){
-//                            JSONArray elementGenres = results.getJSONObject(i).getJSONArray("genres");
-//
-//                            int checkComptRow = 0;
-//                            for(int k=0;k<elementGenres.length();k++) {
-//                                for(int l=0;l<genresChoosen.size();l++) {
-//                                    Log.i("jjjjjj", ""+genresChoosen.get(l)+"=="+elementGenres.getJSONObject(k).getString("name"));
-//                                    if(genresChoosen.get(l).equals(elementGenres.getJSONObject(k).getString("name"))) {
-//                                        checkComptRow++;
-//                                    }
-//                                }
-//                            }
-//
-//                            Log.i("jjjjjj", ""+checkComptRow);
-//
-//                            if(checkComptRow==genresChoosen.size()){
-//                                resultsFinal.put(results.getJSONObject(i));
-//                            }
-//
-//                        }
+                        //                        for(int i=0;i<results.length();i++){
+                        //                            JSONArray elementGenres = results.getJSONObject(i).getJSONArray("genres");
+                        //
+                        //                            int checkComptRow = 0;
+                        //                            for(int k=0;k<elementGenres.length();k++) {
+                        //                                for(int l=0;l<genresChoosen.size();l++) {
+                        //                                    Log.i("jjjjjj", ""+genresChoosen.get(l)+"=="+elementGenres.getJSONObject(k).getString("name"));
+                        //                                    if(genresChoosen.get(l).equals(elementGenres.getJSONObject(k).getString("name"))) {
+                        //                                        checkComptRow++;
+                        //                                    }
+                        //                                }
+                        //                            }
+                        //
+                        //                            Log.i("jjjjjj", ""+checkComptRow);
+                        //
+                        //                            if(checkComptRow==genresChoosen.size()){
+                        //                                resultsFinal.put(results.getJSONObject(i));
+                        //                            }
+                        //
+                        //                        }
 
                         mAdapter = new ItemRowAdapter(resultsFinal, typeProcessed);
                         recyclerView.setAdapter(mAdapter);
                         initSwipe();
+                    }
+                    else{
+
+                        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+                        findViewById(R.id.progressBar).setVisibility(View.GONE);
+
+                        if(isConnected) {
+
+                            TextView txtError = (TextView) findViewById(R.id.errorTxtLoading);
+                            final RelativeLayout layoutError = (RelativeLayout) findViewById(R.id.errorLoadingLayout);
+                            txtError.setText("No results found");
+
+                            Button retryBtn = (Button) findViewById(R.id.retryButton);
+                            retryBtn.getBackground().setAlpha(64);
+
+                            layoutError.setVisibility(View.VISIBLE);
+
+                            retryBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+                                    layoutError.setVisibility(View.GONE);
+                                    finish();
+                                    Intent intentHome = new Intent(context, MainActivity.class);
+                                    context.startActivity(intentHome);
+                                }
+                            });
+                        }
+
+                    }
 
                 }
 
@@ -254,8 +290,10 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
             //#############################################################################
 
                 else {
+
                     findViewById(R.id.progressBar).setVisibility(View.GONE);
-                    TextView txtError    = (TextView) findViewById(R.id.errorTxtLoading);
+
+                    TextView txtError = (TextView) findViewById(R.id.errorTxtLoading);
                     final RelativeLayout layoutError = (RelativeLayout) findViewById(R.id.errorLoadingLayout);
                     txtError.setText("No internet");
 
@@ -273,6 +311,7 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
                             startActivity(getIntent());
                         }
                     });
+
                 }
 
         }
@@ -324,43 +363,68 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
                         }
                     }
 
+                    JSONObject jsonItem = null;
+                    try {
+                        jsonItem = ((ItemRowAdapter) mAdapter).updateLikes(position);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    if(typeProcessed==1) {
+                        // likesAnime
+                        for(int i=0;i<likesAnime.length();i++){
+                            try {
+                                if(listLikesAnime.getJSONObject(i).getInt("mal_id")==jsonItem.getInt("mal_id")){
+                                    ((ItemRowAdapter) mAdapter).removeItem(position);
+                                    return;
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    else{
+                        // likesMovie
+                        for(int i=0;i<likesMovie.length();i++){
+                            try {
+                                if(listLikesMovie.getJSONObject(i).getInt("id")==jsonItem.getInt("id")){
+                                    ((ItemRowAdapter) mAdapter).removeItem(position);
+                                    return;
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
                     SharedPreferences.Editor editor = getSharedPreferences(globalPreferenceName, MODE_PRIVATE).edit();
 
                     // TODO: More generic approache
 
                     if (direction == ItemTouchHelper.RIGHT) {
                         Toast.makeText(context, "Love", Toast.LENGTH_LONG).show();
-                        try {
-                            JSONObject jsonItem = ((ItemRowAdapter) mAdapter).updateLikes(position);
 
-                            // TODO: check if in JSONArray and Unlike a anime/movie
-                            if(typeProcessed==1) {
-                                listLikesAnime.put(jsonItem);
-                                editor.putString("likesAnime", listLikesAnime.toString());
-                            }
-                            else{
-                                listLikesMovie.put(jsonItem);
-                                editor.putString("likesMovie", listLikesMovie.toString());
-                            }
-
-                            ((ItemRowAdapter) mAdapter).removeItem(position);
-                            editor.commit();
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        // TODO: check if in JSONArray and Unlike a anime/movie
+                        if(typeProcessed==1) {
+                            listLikesAnime.put(jsonItem);
+                            editor.putString("likesAnime", listLikesAnime.toString());
                         }
+                        else{
+                            listLikesMovie.put(jsonItem);
+                            editor.putString("likesMovie", listLikesMovie.toString());
+                        }
+
+                        ((ItemRowAdapter) mAdapter).removeItem(position);
+                        editor.commit();
+
                     } else {
                         Toast.makeText(context, "Don't want to see", Toast.LENGTH_LONG).show();
-                        try {
-                            JSONObject jsonItem = ((ItemRowAdapter) mAdapter).updateLikes(position);
 
 //                            listLikesAnime.put(jsonItem);
-                           ((ItemRowAdapter) mAdapter).removeItem(position);
+                        ((ItemRowAdapter) mAdapter).removeItem(position);
 //                            editor.putString("likesAnime", listLikesAnime.toString());
 //                            editor.commit();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+
                     }
                 }
 
