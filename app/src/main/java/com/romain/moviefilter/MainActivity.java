@@ -120,42 +120,46 @@ public class MainActivity extends Activity {
                 });
 
 
-            // Set navbar
-            final ActionBar actionBar = getActionBar();
+            //#######################################################################################################################
+            //##### Gestion de la première connexion -> Enregistrement du Username ##################################################
+            //#######################################################################################################################
 
-            SharedPreferences sharedPreferences = getSharedPreferences(ListPropositionActivity.globalPreferenceName, MODE_PRIVATE);
+                // Set navbar
+
+                final ActionBar actionBar = getActionBar();
+
+                SharedPreferences sharedPreferences = getSharedPreferences(ListPropositionActivity.globalPreferenceName, MODE_PRIVATE);
 
 
-            if(!sharedPreferences.getBoolean("SetUsername", false)){
-                findViewById(R.id.mainScrollView).setVisibility(View.GONE);
-                findViewById(R.id.mainEditUsername).setVisibility(View.VISIBLE);
-                SharedPreferences.Editor editor = getSharedPreferences(ListPropositionActivity.globalPreferenceName, MODE_PRIVATE).edit();
+                if(!sharedPreferences.getBoolean("SetUsername", false)){
+                    findViewById(R.id.mainScrollView).setVisibility(View.GONE);
+                    findViewById(R.id.mainEditUsername).setVisibility(View.VISIBLE);
+                    SharedPreferences.Editor editor = getSharedPreferences(ListPropositionActivity.globalPreferenceName, MODE_PRIVATE).edit();
 
-                final Button btnSubmit = (Button) findViewById(R.id.btnValidateUsername);
+                    final Button btnSubmit = (Button) findViewById(R.id.btnValidateUsername);
 
-                btnSubmit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        EditText usernameEditText = (EditText) findViewById(R.id.editTextUsername);
+                    btnSubmit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            EditText usernameEditText = (EditText) findViewById(R.id.editTextUsername);
 
-                        String usernameString = usernameEditText.getText().toString();
+                            String usernameString = usernameEditText.getText().toString();
 
-                        SharedPreferences.Editor editor = getSharedPreferences(ListPropositionActivity.globalPreferenceName, MODE_PRIVATE).edit();
-                        editor.putString("Username", usernameString);
-                        editor.putBoolean("SetUsername", true);
-                        editor.commit();
+                            SharedPreferences.Editor editor = getSharedPreferences(ListPropositionActivity.globalPreferenceName, MODE_PRIVATE).edit();
+                            editor.putString("Username", usernameString);
+                            editor.putBoolean("SetUsername", true);
+                            editor.commit();
 
-                        actionBar.setTitle(String.format("Hi %s !", usernameString));
-                        findViewById(R.id.mainEditUsername).setVisibility(View.GONE);
-                        findViewById(R.id.mainScrollView).setVisibility(View.VISIBLE);
+                            actionBar.setTitle(String.format("Hi %s !", usernameString));
+                            findViewById(R.id.mainEditUsername).setVisibility(View.GONE);
+                            findViewById(R.id.mainScrollView).setVisibility(View.VISIBLE);
 
-                    }
-                });
-            }
-            else{
-                actionBar.setTitle(String.format("Hi %s !", sharedPreferences.getString("Username", "visitor")));
-            }
-
+                        }
+                    });
+                }
+                else{
+                    actionBar.setTitle(String.format("Hi %s !", sharedPreferences.getString("Username", "visitor")));
+                }
 
         }
 

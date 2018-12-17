@@ -221,6 +221,37 @@ public class ListPropositionActivity extends Activity implements AsyncResponse{
                         layoutManager = new LinearLayoutManager(this);
                         recyclerView.setLayoutManager(layoutManager);
 
+//                        resultsFinal = new JSONArray();
+//
+//                        boolean checkItem;
+//
+//                        for(int i=0;i<body.length();i++) {
+//
+//                            checkItem = false;
+//
+//                            try {
+//                                JSONObject jsonElement = body.getJSONObject(i);
+//
+//                                JSONArray genres = jsonElement.getJSONArray("genres");
+//
+//                                Log.i("(Warning)", genresChoosen.toString());
+//
+//                                for(int k=0;k<genres.length();k++) {
+//                                    if (genresChoosen.contains(genres.getJSONObject(k).getString("name"))) {
+//                                        checkItem = true;
+//                                        Log.i("(Warning)", jsonElement.getString("title")+" have the genre "+genresChoosen.toString());
+//                                    }
+//                                }
+//
+//                                if(checkItem){
+//                                    resultsFinal.put(jsonElement);
+//                                }
+//
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+
                         resultsFinal = body;
 
                         if(resultsFinal.length()>0) {
